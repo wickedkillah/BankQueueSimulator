@@ -38,8 +38,7 @@ namespace BankQueueSimulator
                                 int.Parse(minTimeToArrival.Text),
                                 int.Parse(maxTimeToArrival.Text),
                                 this);
-            sim.Start();
-            await sim.Simulate();
+            await sim.Start();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)

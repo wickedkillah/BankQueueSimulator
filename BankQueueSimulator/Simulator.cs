@@ -8,18 +8,21 @@ using System.Windows.Threading;
 
 namespace BankQueueSimulator
 {
+    /// <summary>
+    /// Simulate queue
+    /// </summary>
     public class Simulator
     {
-        public static readonly TimeSpan interval = TimeSpan.FromMilliseconds(30);
+        readonly TimeSpan interval = TimeSpan.FromMilliseconds(30);
 
-        public int randomWorkTime => random.Next(minTimeToWork, maxTimeToWork);
-        public int randomArrivalTime => random.Next(minTimeToArrival, maxTimeToArrival);
+        Random random;
+        int randomWorkTime => random.Next(minTimeToWork, maxTimeToWork);
+        int randomArrivalTime => random.Next(minTimeToArrival, maxTimeToArrival);
 
         int minTimeToWork, maxTimeToWork, minTimeToArrival, maxTimeToArrival;
-        bool stop;
         MainWindow window;
-        Random random;
         Teller[] tellers;
+        bool stop;
 
         TimeSpan timeSinceStart;
         TimeSpan currentTimeToArrival;
@@ -46,7 +49,10 @@ namespace BankQueueSimulator
             }
         }
 
-        public async Task Simulate()
+        /// <summary>
+        /// Init and start main loop
+        /// </summary>
+        public async Task Start()
         {
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = interval;
@@ -56,11 +62,11 @@ namespace BankQueueSimulator
             {
                 await Task.Delay(30);
             }
+            timer.Tick -= Update;
             timer.Stop();
         }
 
         public void Stop() => stop = true;
-        public void Start() => stop = false;
 
         void Update(object sender, EventArgs e)
         {
@@ -120,6 +126,18 @@ namespace BankQueueSimulator
                     window.currentTellersQueue.Text += $"{item.currentClient} ";
                 else
                     window.currentTellersQueue.Text += $"X ";
+            }
+        }
+
+        class Teller
+        {
+            internal int? currentClient;
+            internal TimeSpan currentTimeToWork;
+
+
+            internal Teller(TimeSpan currentTimeToWork)
+            {
+                this.currentTimeToWork = currentTimeToWork;
             }
         }
     }
